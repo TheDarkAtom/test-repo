@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to build
+        required: true
+        default: main
+        type: string
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache deps
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: deps/install
+          key: deps-${{ hashFiles('build_deps.ps1', 'i686-toolchain.cmake') }}
+
+      - name: Download and extract toolchain
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/mstorsjo/llvm-mingw/releases/download/20260602/llvm-mingw-20260602-msvcrt-i686.zip" -OutFile llvm-mingw.zip
+          7z x llvm-mingw.zip -odeps/mingw32 -y -spe
+
+      - name: Build dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: ./build_deps.ps1 -Toolchain "${{ github.workspace }}/i686-toolchain.cmake"
+
+      - name: Clone and build
+        run: ./build_titan.ps1 -Branch ${{ inputs.branch }} -Toolchain "${{ github.workspace }}/i686-toolchain.cmake"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TitanEditor-${{ inputs.branch }}
+          path: build/TitanEditor.exe
