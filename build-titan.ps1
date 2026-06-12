@@ -20,8 +20,9 @@ Write-Host "Done."
 
 Set-Location $PSScriptRoot
 
-$installDir = "$PSScriptRoot/deps/install"
-$srcDir     = "$PSScriptRoot/titan-editor"
+$installDir     = "$PSScriptRoot/deps/install"
+$srcDir         = "$PSScriptRoot/titan-editor"
+$mingw_dir_name = "llvm-mingw-20260602-msvcrt-i686"
 
 $cflags          = "-Wall -Wextra -fstack-protector-strong -ftrivial-auto-var-init=zero -g"
 $cflagsRelease   = "-O2 -DNDEBUG -D_FORTIFY_SOURCE=2"
@@ -29,7 +30,7 @@ $cxxflags        = "$cflags -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST
 $cxxflagsRelease = $cflagsRelease
 $ldflags         = ""
 
-$env:PATH = "$PSScriptRoot/deps/mingw32/bin;$env:PATH"
+$env:PATH = "$PSScriptRoot/deps/$mingw_dir_name/bin;$env:PATH"
 
 function Get-ShortPath($path) {
     $fso = New-Object -ComObject Scripting.FileSystemObject
