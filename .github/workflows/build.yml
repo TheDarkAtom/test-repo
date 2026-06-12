@@ -31,10 +31,10 @@ jobs:
 
       - name: Build dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: ./build_deps.ps1 -Toolchain "${{ github.workspace }}/i686-toolchain.cmake"
+        run: ./build-deps.ps1 -Toolchain "${{ github.workspace }}/i686-toolchain.cmake"
 
       - name: Clone and build
-        run: ./build_titan.ps1 -Branch ${{ inputs.branch }} -Toolchain "${{ github.workspace }}/i686-toolchain.cmake"
+        run: ./build-titan.ps1 -Branch ${{ inputs.branch }} -Toolchain "${{ github.workspace }}/i686-toolchain.cmake"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
