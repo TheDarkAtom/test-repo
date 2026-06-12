@@ -1,7 +1,7 @@
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_SYSTEM_PROCESSOR x86)
 
-set(MINGW_ROOT "${CMAKE_CURRENT_LIST_DIR}/deps/mingw32")
+set(MINGW_ROOT "${CMAKE_CURRENT_LIST_DIR}/deps/llvm-mingw-20260602-msvcrt-i686")
 
 set(CMAKE_C_COMPILER   "${MINGW_ROOT}/bin/i686-w64-mingw32-clang.exe")
 set(CMAKE_CXX_COMPILER "${MINGW_ROOT}/bin/i686-w64-mingw32-clang++.exe")

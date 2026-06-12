@@ -20,9 +20,10 @@ $downloadItems = @(
     "https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.2/wxWidgets-3.3.2.zip"
 )
 
-$installDir = "$PSScriptRoot/deps/install"
-$zlibSrc    = "$PSScriptRoot/deps/zlib"
-$wxSrc      = "$PSScriptRoot/deps/wxWidgets"
+$installDir     = "$PSScriptRoot/deps/install"
+$zlibSrc        = "$PSScriptRoot/deps/zlib-1.3.2"
+$wxSrc          = "$PSScriptRoot/deps/wxWidgets"
+$mingw_dir_name = "llvm-mingw-20260602-msvcrt-i686"
 
 $cflags          = "-Wall -Wextra -fstack-protector-strong -ftrivial-auto-var-init=zero -g"
 $cflagsRelease   = "-O2 -DNDEBUG -D_FORTIFY_SOURCE=2"
@@ -66,20 +67,20 @@ Write-Host "Extracting archives..."
 New-Item -ItemType Directory -Force -Path deps | Out-Null
 
 $extractDirs = @(
-    "deps/mingw32",
-    "deps/zlib",
+    "deps",
+    "deps",
     "deps/wxWidgets"
 )
 
 for ($i = 0; $i -lt $downloadItems.Count; $i++) {
     $filename = Split-Path $downloadItems[$i] -Leaf
     Write-Host "$filename ..."
-    7z x $filename -o"$($extractDirs[$i])" -y -spe
+    7z x $filename -o"$($extractDirs[$i])" -y
     if ($LASTEXITCODE -ne 0) { Write-Host "Extraction failed, aborting..."; exit 1 }
     Write-Host "OK"
 }
 
-$env:PATH = "$PSScriptRoot/deps/mingw32/bin;$env:PATH"
+$env:PATH = "$PSScriptRoot/deps/$mingw_dir_name/bin;$env:PATH"
 
 # zlib
 Write-Host "Configuring zlib..."
