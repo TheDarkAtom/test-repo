@@ -5,6 +5,10 @@ param(
 
 Set-Location $PSScriptRoot
 
+. "$PSScriptRoot/common.ps1" -Toolchain $Toolchain
+
+$env:PATH = "$PSScriptRoot/toolchain/mingw/bin;$env:PATH"
+
 function Get-ShortPath($path) {
     $fso = New-Object -ComObject Scripting.FileSystemObject
     if (Test-Path $path -PathType Container) {
@@ -13,74 +17,6 @@ function Get-ShortPath($path) {
         return $fso.GetFile($path).ShortPath.Replace('\', '/')
     }
 }
-
-$downloadItems = @(
-    "https://github.com/mstorsjo/llvm-mingw/releases/download/20260602/llvm-mingw-20260602-msvcrt-i686.zip",
-    "https://github.com/madler/zlib/releases/download/v1.3.2/zlib132.zip",
-    "https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.2/wxWidgets-3.3.2.zip"
-)
-
-$installDir     = "$PSScriptRoot/deps/install"
-$zlibSrc        = "$PSScriptRoot/deps/zlib-1.3.2"
-$wxSrc          = "$PSScriptRoot/deps/wxWidgets"
-$mingw_dir_name = "llvm-mingw-20260602-msvcrt-i686"
-
-$cflags          = "-Wall -Wextra -fstack-protector-strong -ftrivial-auto-var-init=zero -g"
-$cflagsRelease   = "-O2 -DNDEBUG -D_FORTIFY_SOURCE=2"
-$cxxflags        = "$cflags -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST"
-$cxxflagsRelease = $cflagsRelease
-$ldflags         = ""
-
-$commonArgs = @(
-    "-G", "Ninja"
-    "-DCMAKE_BUILD_TYPE=Release"
-    "-DCMAKE_TOOLCHAIN_FILE=$Toolchain"
-    "-DCMAKE_INSTALL_PREFIX=$installDir"
-    "-DCMAKE_C_FLAGS=$cflags"
-    "-DCMAKE_C_FLAGS_RELEASE=$cflagsRelease"
-    "-DCMAKE_EXE_LINKER_FLAGS=$ldflags"
-    "-DCMAKE_SHARED_LINKER_FLAGS=$ldflags"
-)
-
-$commonArgsCxx = @(
-    "-DCMAKE_CXX_FLAGS=$cxxflags"
-    "-DCMAKE_CXX_FLAGS_RELEASE=$cxxflagsRelease"
-)
-
-# Download
-Write-Host "Downloading prerequisites..."
-foreach ($url in $downloadItems) {
-    $filename = Split-Path $url -Leaf
-    Write-Host "$url ..."
-    try {
-        Invoke-WebRequest -Uri $url -OutFile $filename
-        Write-Host "OK"
-    } catch {
-        Write-Host "An error has occurred: $_"
-        Write-Host "Aborting..."
-        exit 1
-    }
-}
-
-# Extract
-Write-Host "Extracting archives..."
-New-Item -ItemType Directory -Force -Path deps | Out-Null
-
-$extractDirs = @(
-    "deps",
-    "deps",
-    "deps/wxWidgets"
-)
-
-for ($i = 0; $i -lt $downloadItems.Count; $i++) {
-    $filename = Split-Path $downloadItems[$i] -Leaf
-    Write-Host "$filename ..."
-    7z x $filename -o"$($extractDirs[$i])" -y
-    if ($LASTEXITCODE -ne 0) { Write-Host "Extraction failed, aborting..."; exit 1 }
-    Write-Host "OK"
-}
-
-$env:PATH = "$PSScriptRoot/deps/$mingw_dir_name/bin;$env:PATH"
 
 # zlib
 Write-Host "Configuring zlib..."

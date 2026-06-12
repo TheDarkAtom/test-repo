@@ -21,13 +21,18 @@ jobs:
         id: cache
         uses: actions/cache@v4
         with:
-          path: deps/install
-          key: deps-${{ hashFiles('build_deps.ps1', 'i686-toolchain.cmake') }}
+          path: |
+            deps/install
+            toolchain
+          key: deps-${{ hashFiles('download-toolchain.ps1', 'download-deps.ps1', 'build-deps.ps1', 'i686-toolchain.cmake') }}
 
       - name: Download and extract toolchain
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/mstorsjo/llvm-mingw/releases/download/20260602/llvm-mingw-20260602-msvcrt-i686.zip" -OutFile llvm-mingw.zip
-          7z x llvm-mingw.zip -odeps/mingw32 -y -spe
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: ./download-toolchain.ps1
+      
+      - name: Download and extract dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: ./download-deps.ps1
 
       - name: Build dependencies
         if: steps.cache.outputs.cache-hit != 'true'

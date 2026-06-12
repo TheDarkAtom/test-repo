@@ -7,6 +7,8 @@ param(
 
 Set-Location $PSScriptRoot
 
+. "$PSScriptRoot/common.ps1" -Toolchain $Toolchain
+
 Write-Host "Cloning repository..."
 git clone https://codeberg.org/DarkAtom/titan-editor.git
 if ($LASTEXITCODE -ne 0) { Write-Host "Clone failed, aborting..."; exit 1 }
@@ -15,22 +17,11 @@ Write-Host "Switching to branch $Branch..."
 Set-Location titan-editor
 git checkout $Branch
 if ($LASTEXITCODE -ne 0) { Write-Host "Checkout failed, aborting..."; exit 1 }
+Set-Location $PSScriptRoot
 
 Write-Host "Done."
 
-Set-Location $PSScriptRoot
-
-$installDir     = "$PSScriptRoot/deps/install"
-$srcDir         = "$PSScriptRoot/titan-editor"
-$mingw_dir_name = "llvm-mingw-20260602-msvcrt-i686"
-
-$cflags          = "-Wall -Wextra -fstack-protector-strong -ftrivial-auto-var-init=zero -g"
-$cflagsRelease   = "-O2 -DNDEBUG -D_FORTIFY_SOURCE=2"
-$cxxflags        = "$cflags -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST"
-$cxxflagsRelease = $cflagsRelease
-$ldflags         = ""
-
-$env:PATH = "$PSScriptRoot/deps/$mingw_dir_name/bin;$env:PATH"
+$env:PATH = "$PSScriptRoot/toolchain/mingw/bin;$env:PATH"
 
 function Get-ShortPath($path) {
     $fso = New-Object -ComObject Scripting.FileSystemObject
@@ -42,7 +33,7 @@ function Get-ShortPath($path) {
 }
 
 Write-Host "Configuring..."
-cmake -S $srcDir -B "$PSScriptRoot/build" `
+cmake -S "titan-editor" -B "$PSScriptRoot/build" `
     -G Ninja `
     -DCMAKE_BUILD_TYPE=Release `
     -DCMAKE_TOOLCHAIN_FILE="$Toolchain" `
