@@ -28,7 +28,7 @@ jobs:
           path: |
             deps/install
             toolchain
-          key: deps-${{ matrix.arch }}-${{ hashFiles('download-toolchain.ps1', 'download-deps.ps1', 'build-deps.ps1', '${{ matrix.arch }}-toolchain.cmake') }}
+          key: deps-${{ matrix.arch }}-${{ hashFiles('download-toolchain.ps1', 'download-deps.ps1', 'build-deps.ps1', 'common.ps1', '${{ matrix.arch }}-toolchain.cmake') }}
 
       - name: Download and extract toolchain
         if: steps.cache.outputs.cache-hit != 'true'
