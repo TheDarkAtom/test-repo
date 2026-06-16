@@ -7,7 +7,7 @@ set(CMAKE_C_COMPILER   "${MINGW_ROOT}/bin/x86_64-w64-mingw32-clang.exe")
 set(CMAKE_CXX_COMPILER "${MINGW_ROOT}/bin/x86_64-w64-mingw32-clang++.exe")
 set(CMAKE_RC_COMPILER  "${MINGW_ROOT}/bin/llvm-windres.exe")
 
-set(CMAKE_C_FLAGS_INIT "-fcf-protection=full -march=x86_64")
+set(CMAKE_C_FLAGS_INIT "-fcf-protection=full -march=x86-64")
 set(CMAKE_CXX_FLAGS_INIT "${CMAKE_C_FLAGS_INIT}")
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-static -Wl,--nxcompat -Wl,--dynamicbase -Wl,--high-entropy-va")
 
