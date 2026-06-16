@@ -20,7 +20,7 @@ function Get-ShortPath($path) {
 
 # zlib
 Write-Host "Configuring zlib..."
-cmake -S $zlibSrc -B "$PSScriptRoot/deps/build/zlib" @commonArgs `
+cmake -S "$PSScriptRoot/deps/zlib" -B "$PSScriptRoot/deps/build/zlib" @commonArgs `
     -DZLIB_BUILD_TESTING=OFF `
     -DZLIB_BUILD_SHARED=OFF `
     -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
@@ -36,7 +36,7 @@ if ($LASTEXITCODE -ne 0) { Write-Host "Install failed, aborting..."; exit 1 }
 
 # wxWidgets
 Write-Host "Configuring wxWidgets..."
-cmake -S $wxSrc -B "$PSScriptRoot/deps/build/wx" @commonArgs @commonArgsCxx `
+cmake -S "$PSScriptRoot/deps/wxWidgets" -B "$PSScriptRoot/deps/build/wx" @commonArgs @commonArgsCxx `
     "-DCMAKE_PREFIX_PATH=$installDir" `
     -DwxBUILD_INSTALL=ON `
     -DwxBUILD_SHARED=OFF `

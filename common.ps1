@@ -4,8 +4,6 @@ param(
 )
 
 $installDir     = "$PSScriptRoot/deps/install"
-$zlibSrc        = "$PSScriptRoot/deps/zlib"
-$wxSrc          = "$PSScriptRoot/deps/wxWidgets"
 
 $cflags          = "-Wall -Wextra -fstack-protector-strong -ftrivial-auto-var-init=zero -g"
 $cflagsRelease   = "-O2 -DNDEBUG -D_FORTIFY_SOURCE=2"
