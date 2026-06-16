@@ -33,17 +33,7 @@ function Get-ShortPath($path) {
 }
 
 Write-Host "Configuring..."
-cmake -S "titan-editor" -B "$PSScriptRoot/build" `
-    -G Ninja `
-    -DCMAKE_BUILD_TYPE=Release `
-    -DCMAKE_TOOLCHAIN_FILE="$Toolchain" `
-    "-DCMAKE_PREFIX_PATH=$installDir" `
-    -DCMAKE_C_FLAGS="$cflags" `
-    -DCMAKE_C_FLAGS_RELEASE="$cflagsRelease" `
-    -DCMAKE_CXX_FLAGS="$cxxflags" `
-    -DCMAKE_CXX_FLAGS_RELEASE="$cxxflagsRelease" `
-    -DCMAKE_EXE_LINKER_FLAGS="$ldflags" `
-    -DCMAKE_SHARED_LINKER_FLAGS="$ldflags" `
+cmake -S "titan-editor" -B "$PSScriptRoot/build" @commonArgs @commonArgsCxx `
     "-DZLIB_LIBRARY=$(Get-ShortPath "$installDir/lib/libzs.a")" `
     "-DZLIB_INCLUDE_DIR=$(Get-ShortPath "$installDir/include")"
 if ($LASTEXITCODE -ne 0) { Write-Host "Configure failed, aborting..."; exit 1 }
@@ -54,6 +44,6 @@ if ($LASTEXITCODE -ne 0) { Write-Host "Build failed, aborting..."; exit 1 }
 
 Write-Host "Stripping debug symbols..."
 llvm-objcopy --only-keep-debug "$PSScriptRoot/build/TitanEditor.exe" "$PSScriptRoot/build/TitanEditor.debug"
-llvm-objcopy --strip-debug --add-gnu-debuglink=TitanEditor.debug "$PSScriptRoot/build/TitanEditor.exe"
+llvm-objcopy --strip-debug "--add-gnu-debuglink=$PSScriptRoot/build/TitanEditor.debug" "$PSScriptRoot/build/TitanEditor.exe"
 
 Write-Host "Done."
