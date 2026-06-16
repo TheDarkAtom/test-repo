@@ -35,7 +35,8 @@ function Get-ShortPath($path) {
 Write-Host "Configuring..."
 cmake -S "titan-editor" -B "$PSScriptRoot/build" @commonArgs @commonArgsCxx `
     "-DZLIB_LIBRARY=$(Get-ShortPath "$installDir/lib/libzs.a")" `
-    "-DZLIB_INCLUDE_DIR=$(Get-ShortPath "$installDir/include")"
+    "-DZLIB_INCLUDE_DIR=$(Get-ShortPath "$installDir/include")" `
+    "-DwxWidgets_CONFIGURATION=mswu"
 if ($LASTEXITCODE -ne 0) { Write-Host "Configure failed, aborting..."; exit 1 }
 
 Write-Host "Building..."
