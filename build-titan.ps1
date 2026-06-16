@@ -52,4 +52,8 @@ Write-Host "Building..."
 cmake --build "$PSScriptRoot/build"
 if ($LASTEXITCODE -ne 0) { Write-Host "Build failed, aborting..."; exit 1 }
 
+Write-Host "Stripping debug symbols..."
+llvm-objcopy --only-keep-debug "$PSScriptRoot/build/TitanEditor.exe" "$PSScriptRoot/build/TitanEditor.debug"
+llvm-objcopy --strip-debug --add-gnu-debuglink=TitanEditor.debug "$PSScriptRoot/build/TitanEditor.exe"
+
 Write-Host "Done."

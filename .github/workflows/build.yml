@@ -19,11 +19,11 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Cache deps
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             deps/install
@@ -46,7 +46,9 @@ jobs:
         run: ./build-titan.ps1 -Branch ${{ inputs.branch }} -Toolchain "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: TitanEditor-${{ inputs.branch }}
-          path: build/TitanEditor.exe
+          name: TitanEditor-${{ inputs.branch }}-${{ matrix.arch }}
+          path: |
+            build/TitanEditor.exe
+            build/TitanEditor.debug
