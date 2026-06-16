@@ -1,7 +1,12 @@
+param(
+    [Parameter(Mandatory)]
+    [string]$wxWidgetsVersion
+)
+
 Write-Host "Downloading prerequisites..."
 
 $zlib_version = "1.3.2"
-$wxwidgets_version = "3.3.2"
+$wxwidgets_version = "$wxWidgetsVersion"
 
 $url = "https://github.com/madler/zlib/releases/download/v$zlib_version/zlib-$zlib_version.tar.gz"
 Write-Host $url
