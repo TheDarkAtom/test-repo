@@ -28,7 +28,7 @@ jobs:
       - name: msys2
         uses: msys2/setup-msys2@v2
         with:
-          msystem: MSYS
+          msystem: MINGW64
           update: true
           install: >-
             git
