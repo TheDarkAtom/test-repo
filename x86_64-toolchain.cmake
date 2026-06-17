@@ -1,3 +1,4 @@
+set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_SYSTEM_PROCESSOR x86)
 
 set(MINGW_ROOT "${CMAKE_CURRENT_LIST_DIR}/toolchain/mingw")
