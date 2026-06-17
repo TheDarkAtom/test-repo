@@ -60,7 +60,7 @@ jobs:
 
       - name: Clone and build
         shell: msys2 {0}
-        run: ./build-titan.sh ${{ inputs.branch }} "(cygpath "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake")"
+        run: ./build-titan.sh ${{ inputs.branch }} "$(cygpath "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake")"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
