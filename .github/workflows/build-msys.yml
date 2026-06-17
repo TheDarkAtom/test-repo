@@ -20,6 +20,8 @@ jobs:
         wx-version: ["3.3.2"]
 
     steps:
+      - run: git config --global core.autocrlf input
+
       - name: Checkout
         uses: actions/checkout@v6
       
@@ -54,11 +56,11 @@ jobs:
       - name: Build dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         shell: msys2 {0}
-        run: ./build-deps.sh "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake"
+        run: ./build-deps.sh "$(cygpath "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake")"
 
       - name: Clone and build
         shell: msys2 {0}
-        run: ./build-titan.sh ${{ inputs.branch }} "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake"
+        run: ./build-titan.sh ${{ inputs.branch }} "(cygpath "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake")"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
