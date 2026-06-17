@@ -1,0 +1,61 @@
+name: Build (MSYS2)
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to build
+        required: true
+        default: main
+        type: string
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [i686, x86_64]
+        wx-version: ["3.3.2", "3.2.10"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      
+      - name: msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MSYS
+
+      # - name: Cache deps
+      #   id: cache
+      #   uses: actions/cache@v5
+      #   with:
+      #     path: |
+      #       deps/install
+      #       toolchain
+      #     key: deps-${{ matrix.arch }}-${{ matrix.wx-version }}-${{ hashFiles('download-toolchain.ps1', 'download-deps.ps1', 'build-deps.ps1', 'common.ps1', '${{ matrix.arch }}-toolchain.cmake') }}
+
+      - name: Download and extract toolchain
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: ./download-toolchain.ps1 -Arch ${{ matrix.arch }}
+      
+      - name: Download and extract dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: ./download-deps.ps1 -wxWidgetsVersion ${{ matrix.wx-version }}
+
+      - name: Build dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: ./build-deps.sh "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake"
+
+      - name: Clone and build
+        run: ./build-titan.sh ${{ inputs.branch }} "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: TitanEditor-${{ inputs.branch }}-wx${{ matrix.wx-version }}-${{ matrix.arch }}
+          path: |
+            build/TitanEditor.exe
+            build/TitanEditor.debug
