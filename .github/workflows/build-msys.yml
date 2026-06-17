@@ -16,8 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [i686, x86_64]
-        wx-version: ["3.3.2", "3.2.10"]
+        arch: [x86_64]
+        wx-version: ["3.3.2"]
 
     steps:
       - name: Checkout
@@ -47,9 +47,11 @@ jobs:
 
       - name: Build dependencies
         if: steps.cache.outputs.cache-hit != 'true'
+        shell: msys2 {0}
         run: ./build-deps.sh "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake"
 
       - name: Clone and build
+        shell: msys2 {0}
         run: ./build-titan.sh ${{ inputs.branch }} "${{ github.workspace }}/${{ matrix.arch }}-toolchain.cmake"
 
       - name: Upload artifact
