@@ -27,6 +27,12 @@ jobs:
         uses: msys2/setup-msys2@v2
         with:
           msystem: MSYS
+          update: true
+          install: >-
+            git
+            curl
+            cmake
+            ninja
 
       # - name: Cache deps
       #   id: cache
