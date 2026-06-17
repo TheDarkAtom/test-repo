@@ -31,6 +31,7 @@ cmake -S "$DIR/deps/wxWidgets" -B "$DIR/deps/build/wx" "${commonArgs[@]}" "${com
     -DwxBUILD_INSTALL=ON \
     -DwxBUILD_SHARED=OFF \
     -DwxBUILD_USE_STATIC_RUNTIME=ON \
+    -DwxBUILD_PRECOMP=OFF \
     -DwxUSE_ZLIB=sys \
     -DZLIB_LIBRARY="$installDir/lib/libzs.a" \
     -DZLIB_INCLUDE_DIR="$installDir/include"
